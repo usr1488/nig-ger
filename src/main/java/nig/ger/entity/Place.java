@@ -8,11 +8,12 @@ public class Place {
     private String location;
     private String description;
     private Category category;
+    private int rate;
 
     public Place() {
     }
 
-    public Place(long placeId, String name, String country, String city, String location, String description, Category category) {
+    public Place(long placeId, String name, String country, String city, String location, String description, Category category, int rate) {
         this.placeId = placeId;
         this.name = name;
         this.country = country;
@@ -20,15 +21,17 @@ public class Place {
         this.location = location;
         this.description = description;
         this.category = category;
+        this.rate = rate;
     }
 
-    public Place(String name, String country, String city, String location, String description, Category category) {
+    public Place(String name, String country, String city, String location, String description, Category category, int rate) {
         this.name = name;
         this.country = country;
         this.city = city;
         this.location = location;
         this.description = description;
         this.category = category;
+        this.rate = rate;
     }
 
     public long getPlaceId() {
@@ -85,6 +88,14 @@ public class Place {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public int getRate() {
+        return rate;
+    }
+
+    public void setRate(int rate) {
+        this.rate = rate;
     }
 
     @Override

@@ -63,13 +63,15 @@
 <div class="container mt-3">
     <div class="row">
         <div class="col">
-            <div class="card mr-3" style="border-color: #414952">
+            <div class="card" style="border-color: #414952">
                 <div class="card-header" style="background-color: #2d333b; color: #a6b3c0;">
                     Menu
                 </div>
                 <div class="card-body p-0" style="background-color: #2d333b; color: #a6b3c0;">
                     <a class="dropdown-item" th:href="@{/profile}" aria-current="true">Profile</a>
+                    <a class="dropdown-item" th:href="@{/bookmarks}" aria-current="true">Bookmarks</a>
                     <a class="dropdown-item" th:href="@{/}" aria-current="true">Nigger list</a>
+                    <a class="dropdown-item" th:href="@{/logout}" aria-current="true">Logout</a>
                 </div>
             </div>
         </div>
@@ -157,7 +159,7 @@
                                     <div class="card-body" style="background-color: #22272e; color: #6c757d;">
                                         <h5 class="card-title"><span th:text="${nl.city}"></span></h5>
                                         <p class="card-text"><span th:text="${nl.category}"></span></p>
-                                        <a href="#" class="btn">More details</a>
+                                        <a href="/place" class="btn">More details</a>
                                     </div>
                                 </div>
                             </table>

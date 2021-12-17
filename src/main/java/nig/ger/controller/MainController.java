@@ -27,18 +27,12 @@ public class MainController {
                            @RequestParam String city,
                            @RequestParam String location,
                            @RequestParam String description,
-                           @RequestParam String category) {
-        Place place = new Place();
-        place.setPlaceId(1);
-        place.setName(name);
-        place.setCountry(country);
-        place.setCity(city);
-        place.setLocation(location);
-        place.setDescription(description);
-        place.setCategory(Arrays.stream(Category.values())
+                           @RequestParam String category,
+                           @RequestParam int rate) {
+        Place place = new Place(name, country, city, location,description, Arrays.stream(Category.values())
                 .filter(categ -> categ.getCategory().equalsIgnoreCase(category))
                 .findFirst()
-                .orElseThrow(RuntimeException::new));
+                .orElseThrow(RuntimeException::new), rate);
         places.add(place);
         return "redirect:/";
     }
@@ -47,7 +41,7 @@ public class MainController {
     public String getPlace(Model model) {
         List<Place> niggerList = places;
         if (niggerList.isEmpty()) {
-            Place place = new Place(1, "Nigger", "Niggeria", "Black city", "Location", "Desc", Category.ABANDONED_PLACES);
+            Place place = new Place(1, "Nigger", "Niggeria", "Black city", "Location", "Desc", Category.ABANDONED_PLACES, 1);
             niggerList.add(place);
         }
         model.addAttribute("niggerList", niggerList);
