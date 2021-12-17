@@ -16,6 +16,6 @@ public class Place {
     private String city;
     private String location;
     private String description;
-    private Category category;
+    private PlaceCategory placeCategory;
     private int rate;
 }

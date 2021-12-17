@@ -1,30 +1,27 @@
 package nig.ger.controller;
 
+import nig.ger.entity.PlaceCategory;
 import nig.ger.entity.Place;
-import nig.ger.util.ConnectionPool;
+import nig.ger.util.SQLQueries;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 public class MainController {
-    private ConnectionPool connectionPool;
+    private JdbcTemplate jdbcTemplate;
 
-    public MainController(ConnectionPool connectionPool) {
-        this.connectionPool = connectionPool;
+    public MainController(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
 
-        try (Connection connection = connectionPool.getConnection();
-             Statement statement = connection.createStatement()) {
-            statement.execute("CREATE TABLE places (name VARCHAR NOT NULL, country VARCHAR NOT NULL, city VARCHAR NOT NULL)");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        jdbcTemplate.execute(SQLQueries.CREATE_TABLE_PLACES);
     }
 
     @PostMapping("/")
@@ -34,49 +31,37 @@ public class MainController {
                            @RequestParam String location,
                            @RequestParam String description,
                            @RequestParam String category) {
-        try (Connection connection = connectionPool.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO places (name, country, city) VALUES (?, ?, ?)")) {
-            preparedStatement.setString(1, name);
-            preparedStatement.setString(2, country);
-            preparedStatement.setString(3, city);
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        jdbcTemplate.update(SQLQueries.INSERT_INTO_PLACES, ps -> {
+            ps.setString(1, name);
+            ps.setString(2, country);
+            ps.setString(3, city);
+            ps.setString(4, location);
+            ps.setString(5, description);
+            ps.setString(6, category);
+        });
 
         return "redirect:/";
     }
 
     @GetMapping("/")
     public String getPlace(Model model) {
-        try (Connection connection = connectionPool.getConnection();
-             Statement statement = connection.createStatement()) {
-            List<Place> places = new ArrayList<>();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM places");
+        List<Place> places = new ArrayList<>();
 
-            while (resultSet.next()) {
-                System.out.printf(
-                        "name: %s\ncountry: %s\ncity: %s\n",
-                        resultSet.getString("name"),
-                        resultSet.getString("country"),
-                        resultSet.getString("city")
-                );
-
-                places.add(
+        jdbcTemplate.query(
+                SQLQueries.SELECT_FROM_PLACES,
+                (RowCallbackHandler) rs -> places.add(
                         Place.builder()
-                                .name(resultSet.getString("name"))
-                                .country(resultSet.getString("country"))
-                                .city(resultSet.getString("city"))
+                                .name(rs.getString("name"))
+                                .country(rs.getString("country"))
+                                .city(rs.getString("city"))
+                                .location(rs.getString("location"))
+                                .description(rs.getString("description"))
+                                .placeCategory(PlaceCategory.valueOf(rs.getString("category").toUpperCase()))
                                 .build()
-                );
-            }
+                )
+        );
 
-            model.addAttribute("niggerList", places);
-
-            resultSet.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        model.addAttribute("niggerList", places);
 
         return "main";
     }
