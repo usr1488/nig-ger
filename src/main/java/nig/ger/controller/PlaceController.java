@@ -16,7 +16,6 @@ public class PlaceController {
                            @RequestParam String category,
                            @RequestParam int rate,
                            Model placeModel) {
-        placeModel.addAttribute("niggerList", MainController.places);
         return "place";
     }
 }

@@ -29,9 +29,6 @@
         background-color: #414952;
         color: white;
     }
-
-
-
 </style>
 
 <title>Nig ger</title>
@@ -80,17 +77,17 @@
         </div>
         <div class="col-10">
             <tr th:each="nl : ${niggerList}" th:field="${nl}">
-            <table th:action="/place">
+                <table th:action="@{/place}" class="mb-3">
                     <div class="card" style="border-color: #414952;">
                         <div class="card-header" style="background-color: #2d333b; color: #a6b3c0;">
-                            <span th:text="${pl.name}"></span>
+                            <span th:text="${nl.name}"></span>
                         </div>
                         <div class="card-body" style="background-color: #22272e;">
                             <img src="..." class="card-img-top" alt="...">
                         </div>
                     </div>
-                </tr>
-            </table>
+                </table>
+            </tr>
             <div class="col-2">
             </div>
         </div>

@@ -14,4 +14,8 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web:2.6.1'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:2.6.1'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc:2.6.1'
+    implementation 'com.h2database:h2:1.4.200'
+    compileOnly 'org.projectlombok:lombok:1.18.22'
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
 }

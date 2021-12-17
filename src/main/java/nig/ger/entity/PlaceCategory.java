@@ -1,6 +1,6 @@
 package nig.ger.entity;
 
-public enum Category {
+public enum PlaceCategory {
     SIGHTS("Sights"),
     PARKS("Parks"),
     RESERVES("Reserves"),
@@ -13,7 +13,7 @@ public enum Category {
 
     private final String category;
 
-    Category(String category) {
+    PlaceCategory(String category) {
         this.category = category;
     }
 
