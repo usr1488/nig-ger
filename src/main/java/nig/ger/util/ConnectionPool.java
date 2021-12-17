@@ -38,11 +38,11 @@ public class ConnectionPool {
     }
 
     public Connection getConnection() {
-        Connection connection = weakConnections.poll();
+        Connection connection = connections.poll();
 
         if (connection == null) {
             try {
-                connection = Optional.ofNullable(connections.poll()).orElse(DriverManager.getConnection(url, login, password));
+                connection = DriverManager.getConnection(url, login, password);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -66,6 +66,9 @@ public class ConnectionPool {
 
     private void releaseConnection(Connection connection) {
         lock.lock();
+
+        Optional.ofNullable(weakConnections.poll()).ifPresent(connections::add);
+
         if (connections.size() < connectionThreshold) {
             connections.add(connection);
             lock.unlock();
