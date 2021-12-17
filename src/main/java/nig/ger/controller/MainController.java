@@ -14,12 +14,7 @@ import java.util.List;
 
 @Controller
 public class MainController {
-    private List<Place> places = new ArrayList<>();
-
-//    @GetMapping("/")
-//    public String main() {
-//        return "redirect:/niggers";
-//    }
+    protected static final List<Place> places = new ArrayList<>();
 
     @PostMapping("/")
     public String addPlace(@RequestParam String name,
@@ -27,24 +22,22 @@ public class MainController {
                            @RequestParam String city,
                            @RequestParam String location,
                            @RequestParam String description,
-                           @RequestParam String category,
-                           @RequestParam int rate) {
+                           @RequestParam String category) {
         Place place = new Place(name, country, city, location,description, Arrays.stream(Category.values())
                 .filter(categ -> categ.getCategory().equalsIgnoreCase(category))
                 .findFirst()
-                .orElseThrow(RuntimeException::new), rate);
+                .orElseThrow(RuntimeException::new));
         places.add(place);
         return "redirect:/";
     }
 
     @GetMapping("/")
     public String getPlace(Model model) {
-        List<Place> niggerList = places;
-        if (niggerList.isEmpty()) {
+        if (places.isEmpty()) {
             Place place = new Place(1, "Nigger", "Niggeria", "Black city", "Location", "Desc", Category.ABANDONED_PLACES, 1);
-            niggerList.add(place);
+            places.add(place);
         }
-        model.addAttribute("niggerList", niggerList);
+        model.addAttribute("niggerList", places);
         return "main";
     }
 }

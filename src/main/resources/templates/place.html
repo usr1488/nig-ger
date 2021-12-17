@@ -79,8 +79,8 @@
             </div>
         </div>
         <div class="col-10">
-            <table>
-                <tr>
+            <tr th:each="nl : ${niggerList}" th:field="${nl}">
+            <table th:action="/place">
                     <div class="card" style="border-color: #414952;">
                         <div class="card-header" style="background-color: #2d333b; color: #a6b3c0;">
                             <span th:text="${pl.name}"></span>

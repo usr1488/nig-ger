@@ -34,6 +34,15 @@ public class Place {
         this.rate = rate;
     }
 
+    public Place(String name, String country, String city, String location, String description, Category category) {
+        this.name = name;
+        this.country = country;
+        this.city = city;
+        this.location = location;
+        this.description = description;
+        this.category = category;
+    }
+
     public long getPlaceId() {
         return placeId;
     }
