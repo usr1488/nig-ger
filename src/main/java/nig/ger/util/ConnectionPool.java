@@ -7,13 +7,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
@@ -24,6 +22,7 @@ public class ConnectionPool implements DataSource {
     private final String username;
     private final String password;
     private final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+    private final Map<Connection, Connection> connectionToProxyMap = new ConcurrentHashMap<>();
     private final Queue<Connection> connections = new ConcurrentLinkedQueue<>();
     private final Queue<Connection> weakConnections = new ConcurrentLinkedQueue<>();
     private final Lock lock = new ReentrantLock(true);
@@ -49,19 +48,21 @@ public class ConnectionPool implements DataSource {
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
         System.out.printf("connections: %d\nweak connections: %d\n\n", connections.size(), weakConnections.size());
-        Connection connection = Optional.ofNullable(connections.poll()).orElse(DriverManager.getConnection(url, username, password));
 
-        return (Connection) Proxy.newProxyInstance(
-                connection.getClass().getClassLoader(),
-                new Class[] { Connection.class },
-                (proxy, method, args) -> {
-                    if (method.getName().equals("close")) {
-                        releaseConnection(connection);
-                        return null;
-                    } else {
-                        return method.invoke(connection, args);
-                    }
-                }
+        return connectionToProxyMap.computeIfAbsent(
+                Optional.ofNullable(connections.poll()).orElse(DriverManager.getConnection(url, username, password)),
+                key -> (Connection) Proxy.newProxyInstance(
+                        key.getClass().getClassLoader(),
+                        new Class[] { Connection.class },
+                        (proxy, method, args) -> {
+                            if (method.getName().equals("close")) {
+                                releaseConnection(key);
+                                return null;
+                            } else {
+                                return method.invoke(key, args);
+                            }
+                        }
+                )
         );
     }
 
@@ -78,8 +79,8 @@ public class ConnectionPool implements DataSource {
             weakConnections.add(connection);
             scheduledExecutorService.schedule(() -> {
                 try {
-                    weakConnections.remove().close();
-                } catch (NoSuchElementException ignored) {
+                    connectionToProxyMap.remove(weakConnections.remove()).close();
+                } catch (NoSuchElementException ignored) { // used remove() instead of poll() to prevent NPE on close()
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
