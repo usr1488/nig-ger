@@ -77,7 +77,7 @@
         </div>
         <div class="col-10">
             <tr th:each="nl : ${niggerList}" th:field="${nl}">
-                <table th:action="@{/place/${nl.placeId}" class="mb-3">
+                <table th:action="@{'/place/' + ${nl.placeId}}" class="mb-3">
                     <div class="card" style="border-color: #414952;">
                         <div class="card-header" style="background-color: #2d333b; color: #a6b3c0;">
                             <span th:text="${nl.name}"></span>

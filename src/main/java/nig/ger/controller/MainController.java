@@ -49,15 +49,15 @@ public class MainController {
 
         jdbcTemplate.query(
                 SQLQueries.SELECT_FROM_PLACES,
-                (RowCallbackHandler) rs -> places.add(
+                (RowCallbackHandler) resultSet -> places.add(
                         Place.builder()
-                                .placeId(rs.getInt("place_id"))
-                                .name(rs.getString("name"))
-                                .country(rs.getString("country"))
-                                .city(rs.getString("city"))
-                                .location(rs.getString("location"))
-                                .description(rs.getString("description"))
-                                .placeCategory(PlaceCategory.valueOf(rs.getString("category").toUpperCase()))
+                                .placeId(resultSet.getLong("place_id"))
+                                .name(resultSet.getString("name"))
+                                .country(resultSet.getString("country"))
+                                .city(resultSet.getString("city"))
+                                .location(resultSet.getString("location"))
+                                .description(resultSet.getString("description"))
+                                .placeCategory(PlaceCategory.valueOf(resultSet.getString("category").toUpperCase()))
                                 .build()
                 )
         );
