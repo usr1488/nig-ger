@@ -1,4 +1,4 @@
-package nig.ger;
+package nig.ger.repository;
 
 import nig.ger.entity.Place;
 import org.springframework.data.jpa.repository.JpaRepository;
