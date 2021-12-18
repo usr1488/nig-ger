@@ -14,8 +14,8 @@ public class PlaceService {
         this.placeRepository = placeRepository;
     }
 
-    public void savePlace(Place place) {
-        placeRepository.save(place);
+    public Place savePlace(Place place) {
+        return placeRepository.save(place);
     }
 
     public List<Place> getAllPlaces() {

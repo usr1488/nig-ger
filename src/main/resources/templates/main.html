@@ -27,6 +27,7 @@
         background-color: #414952;
         color: white;
     }
+
 </style>
 
 <title>Nig ger</title>
@@ -94,7 +95,7 @@
                                  style="background-color: #22272e;" aria-labelledby="headingOne"
                                  data-bs-parent="#accordionExample">
                                 <div class="accordion-body">
-                                    <form class="mb-3" th:action="@{/}" method="post">
+                                    <form class="mb-3" action="/" method="post" enctype="multipart/form-data">
                                         <div class="mb-3">
                                             <input type="text" class="form-control"
                                                    style="background-color: #22272e;  color: #6c757d; border-color: #414952;"
@@ -134,6 +135,9 @@
                                                    style="background-color: #22272e; color: #6c757d; border-color: #414952;"
                                                    placeholder="Nigger location"
                                                    name="address">
+                                        </div>
+                                        <div class="mb-3">
+                                            <input class="mb-3 btn" type="file" name="img">
                                         </div>
                                         <div class="mb-3">
                     <textarea class="form-control" placeholder="Tell about your penis" id="floatingTextarea2"
