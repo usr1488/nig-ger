@@ -7,8 +7,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class PlaceController {
-    @GetMapping("/place")
-    public String getPlace(@RequestParam String name,
+    @GetMapping("/place/{placeId}")
+    public String getPlace(@RequestParam long placeId,
+                           @RequestParam String name,
                            @RequestParam String country,
                            @RequestParam String city,
                            @RequestParam String location,

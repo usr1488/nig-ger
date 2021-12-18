@@ -50,6 +50,7 @@ public class MainController {
                 SQLQueries.SELECT_FROM_PLACES,
                 (RowCallbackHandler) rs -> places.add(
                         Place.builder()
+                                .placeId(rs.getInt("place_id"))
                                 .name(rs.getString("name"))
                                 .country(rs.getString("country"))
                                 .city(rs.getString("city"))
