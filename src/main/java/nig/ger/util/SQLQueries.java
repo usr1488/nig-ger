@@ -20,5 +20,5 @@ public interface SQLQueries {
             ") " +
             "VALUES (?, ?, ?, ?, ?, ?)";
     String SELECT_FROM_PLACES = "SELECT * FROM places";
-    String SELECT_FROM_PLACES_WHERE_ID = "SELECT * FROM places WHERE place_id = :placeId";
+    String SELECT_FROM_PLACES_WHERE_ID = "SELECT * FROM places WHERE place_id = ?";
 }

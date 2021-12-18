@@ -37,7 +37,7 @@ public class MainController {
             ps.setString(3, city);
             ps.setString(4, location);
             ps.setString(5, description);
-            ps.setString(6, category);
+            ps.setString(6, category.toUpperCase());
         });
 
         return "redirect:/";
@@ -57,7 +57,7 @@ public class MainController {
                                 .city(resultSet.getString("city"))
                                 .location(resultSet.getString("location"))
                                 .description(resultSet.getString("description"))
-                                .placeCategory(PlaceCategory.valueOf(resultSet.getString("category").toUpperCase()))
+                                .placeCategory(PlaceCategory.valueOf(resultSet.getString("category")))
                                 .build()
                 )
         );
