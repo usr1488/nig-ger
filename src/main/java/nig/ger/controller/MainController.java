@@ -39,6 +39,7 @@ public class MainController {
             ps.setString(5, description);
             ps.setString(6, category);
         });
+
         return "redirect:/";
     }
 
@@ -60,7 +61,9 @@ public class MainController {
                                 .build()
                 )
         );
+
         model.addAttribute("niggerList", places);
+
         return "main";
     }
 }

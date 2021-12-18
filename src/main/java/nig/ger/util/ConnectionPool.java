@@ -95,7 +95,7 @@ public class ConnectionPool implements DataSource {
             return (T) getConnection();
         }
 
-        throw new SQLException("Type not supported: " + iface.getName());
+        throw new SQLException("Wrapping type not supported: " + iface.getName());
     }
 
     @Override
