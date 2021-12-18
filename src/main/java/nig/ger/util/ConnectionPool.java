@@ -1,6 +1,7 @@
 package nig.ger.util;
 
 import javax.sql.DataSource;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.lang.reflect.Proxy;
 import java.sql.Connection;
@@ -16,7 +17,6 @@ import java.util.Queue;
 import java.util.concurrent.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.logging.Logger;
 
 public class ConnectionPool implements DataSource {
     private final int connectionThreshold;
@@ -28,7 +28,7 @@ public class ConnectionPool implements DataSource {
     private final Queue<Connection> connections = new ConcurrentLinkedQueue<>();
     private final Queue<Connection> weakConnections = new ConcurrentLinkedQueue<>();
     private final Lock lock = new ReentrantLock(true);
-    private PrintWriter logger = new PrintWriter(System.out);
+    private final Logger logger = new Logger(System.out);
 
     public ConnectionPool(String url, String username, String password) {
         this(url, username, password, 10);
@@ -83,11 +83,7 @@ public class ConnectionPool implements DataSource {
                     connectionToProxyMap.remove(weakConnections.remove()).close();
                 } catch (NoSuchElementException ignored) { // used remove() instead of poll() to prevent NPE on close()
                 } catch (SQLException e) {
-                    logger.println(
-                            LocalDateTime.now().format(DateTimeFormatter.ofPattern("H:m:s EEEE d/M/y")) +
-                                    " Exception occurred while closing connection: " +
-                                    e.getMessage()
-                    );
+                    logger.log("Exception occurred while closing connection: " + e.getMessage());
                 }
             }, 30, TimeUnit.SECONDS);
         }
@@ -97,7 +93,7 @@ public class ConnectionPool implements DataSource {
     @SuppressWarnings("unchecked")
     public <T> T unwrap(Class<T> iface) throws SQLException {
         if (isWrapperFor(iface)) {
-            return (T) DriverManager.getConnection(url, username, password);
+            return (T) getConnection();
         }
 
         throw new SQLException("Wrapping type not supported: " + iface.getName());
@@ -110,12 +106,12 @@ public class ConnectionPool implements DataSource {
 
     @Override
     public PrintWriter getLogWriter() {
-        return logger;
+        return logger.printWriter;
     }
 
     @Override
-    public void setLogWriter(PrintWriter logger) {
-        this.logger = logger;
+    public void setLogWriter(PrintWriter printWriter) {
+        logger.printWriter = printWriter;
     }
 
     @Override
@@ -129,7 +125,20 @@ public class ConnectionPool implements DataSource {
     }
 
     @Override
-    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+    public java.util.logging.Logger getParentLogger() throws SQLFeatureNotSupportedException {
         throw new SQLFeatureNotSupportedException();
+    }
+
+    private static class Logger {
+        private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("H:m:s EEEE d/M/y");
+        private PrintWriter printWriter;
+
+        private Logger(OutputStream outputStream) {
+            this.printWriter = new PrintWriter(outputStream);
+        }
+
+        private void log(String message) {
+            printWriter.printf("|%s| %s\n", LocalDateTime.now().format(formatter), message);
+        }
     }
 }
