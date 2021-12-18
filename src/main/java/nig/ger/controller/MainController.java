@@ -21,7 +21,7 @@ public class MainController {
     public String addPlace(@RequestParam String name,
                            @RequestParam String country,
                            @RequestParam String city,
-                           @RequestParam String location,
+                           @RequestParam String address,
                            @RequestParam String description,
                            @RequestParam String placeCategory) {
         placeService.savePlace(
@@ -29,7 +29,7 @@ public class MainController {
                         .name(name)
                         .country(country)
                         .city(city)
-                        .location(location)
+                        .address(address)
                         .description(description)
                         .placeCategory(PlaceCategory.valueOf(placeCategory.toUpperCase()))
                         .build()
