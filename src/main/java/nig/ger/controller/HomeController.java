@@ -13,11 +13,14 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.imageio.ImageIO;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Objects;
 
 @Controller
 public class HomeController {
+    private static final String IMAGE_LOCATION = Objects.requireNonNull(
+            Thread.currentThread().getContextClassLoader().getResource("static/img/")
+    ).getPath();
     private PlaceService placeService;
 
     public HomeController(PlaceService placeService) {
@@ -43,7 +46,7 @@ public class HomeController {
                         .build()
         ).getPlaceId();
 
-        ImageIO.write(ImageIO.read(img.getInputStream()), "jpg", new File(id + ".jpg"));
+        ImageIO.write(ImageIO.read(img.getInputStream()), "jpg", new File(IMAGE_LOCATION + id + ".jpg"));
 
         return "redirect:/";
     }
