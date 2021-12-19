@@ -16,11 +16,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
+import static nig.ger.util.PathConstants.IMAGE_LOCATION;
+
 @Controller
 public class HomeController {
-    private static final String IMAGE_LOCATION = Objects.requireNonNull(
-            Thread.currentThread().getContextClassLoader().getResource("static/img/")
-    ).getPath();
     private PlaceService placeService;
 
     public HomeController(PlaceService placeService) {
@@ -35,6 +34,7 @@ public class HomeController {
                            @RequestParam String description,
                            @RequestParam String placeCategory,
                            @RequestParam MultipartFile img) throws IOException {
+
         long id = placeService.savePlace(
                 Place.builder()
                         .name(name)
