@@ -15,7 +15,7 @@ public class PlaceController {
     }
 
     @GetMapping("/place/{placeId}")
-    public ModelAndView place(@PathVariable Long placeId) {
+    public ModelAndView place(@PathVariable long placeId) {
         return new ModelAndView("place", "niggerList", placeService.getPlaceById(placeId));
     }
 }
