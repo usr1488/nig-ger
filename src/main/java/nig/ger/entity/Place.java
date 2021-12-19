@@ -5,9 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,7 +17,6 @@ public class Place {
     @Id
     @GeneratedValue
     private long placeId;
-    private long imgId;
     private String name;
     private String country;
     private String city;
@@ -26,4 +24,6 @@ public class Place {
     private String description;
     private PlaceCategory placeCategory;
     private int rate;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "place", orphanRemoval = true)
+    private List<Image> images;
 }

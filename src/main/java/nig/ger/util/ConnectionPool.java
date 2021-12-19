@@ -11,7 +11,6 @@ import java.sql.SQLFeatureNotSupportedException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.*;
@@ -38,9 +37,11 @@ public class ConnectionPool implements DataSource {
         this.url = url;
         this.username = username;
         this.password = password;
-        this.connectionThreshold = connectionThreshold;
+        this.connectionThreshold = Math.max(1, connectionThreshold);
 
         Runtime.getRuntime().addShutdownHook(new Thread(scheduledExecutorService::shutdownNow));
+
+        logger.log("ConnectionPool is ready");
     }
 
     @Override
@@ -80,8 +81,10 @@ public class ConnectionPool implements DataSource {
             weakConnections.add(connection);
             scheduledExecutorService.schedule(() -> {
                 try {
-                    connectionToProxyMap.remove(weakConnections.remove()).close();
-                } catch (NoSuchElementException ignored) { // used remove() instead of poll() to prevent NPE on close()
+                    if (weakConnections.removeIf(connection::equals)) {
+                        connectionToProxyMap.remove(connection);
+                        connection.close();
+                    }
                 } catch (SQLException e) {
                     logger.log("Exception occurred while closing connection: " + e.getMessage());
                 }
@@ -130,7 +133,7 @@ public class ConnectionPool implements DataSource {
     }
 
     private static class Logger {
-        private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("H:m:s EEEE d/M/y");
+        private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("y-M-d H:m:s");
         private PrintWriter printWriter;
 
         private Logger(OutputStream outputStream) {
@@ -138,7 +141,8 @@ public class ConnectionPool implements DataSource {
         }
 
         private void log(String message) {
-            printWriter.printf("|%s| %s\n", LocalDateTime.now().format(formatter), message);
+            printWriter.printf("[%s # %s] %s\n", LocalDateTime.now().format(formatter), Thread.currentThread().getName(), message);
+            printWriter.flush();
         }
     }
 }

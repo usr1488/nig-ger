@@ -1,10 +1,17 @@
 package nig.ger.service;
 
-import nig.ger.repository.PlaceRepository;
 import nig.ger.entity.Place;
+import nig.ger.repository.PlaceRepository;
+import nig.ger.util.Constants;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+
+import static nig.ger.util.Constants.IMAGE_FORMAT;
 
 @Service
 public class PlaceService {
@@ -14,8 +21,12 @@ public class PlaceService {
         this.placeRepository = placeRepository;
     }
 
-    public Place savePlace(Place place) {
-        return placeRepository.save(place);
+    public void savePlace(Place place, MultipartFile image) throws IOException {
+        ImageIO.write(
+                ImageIO.read(image.getInputStream()),
+                IMAGE_FORMAT,
+                new File(Constants.IMAGE_LOCATION + placeRepository.save(place).getPlaceId() + "." + IMAGE_FORMAT)
+        );
     }
 
     public List<Place> getAllPlaces() {
@@ -23,6 +34,6 @@ public class PlaceService {
     }
 
     public Place getPlaceById(Long id) {
-        return placeRepository.findById(id).orElseThrow(() -> new RuntimeException("Place not found, ID - " + id));
+        return placeRepository.findById(id).orElse(new Place());
     }
 }

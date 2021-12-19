@@ -3,6 +3,7 @@ package nig.ger.controller;
 import nig.ger.entity.Place;
 import nig.ger.entity.PlaceCategory;
 import nig.ger.service.PlaceService;
+import nig.ger.util.Constants;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,10 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.imageio.ImageIO;
-import java.io.File;
 import java.io.IOException;
-import java.util.Objects;
 
 import static nig.ger.util.PathConstants.IMAGE_LOCATION;
 
@@ -33,9 +31,8 @@ public class HomeController {
                            @RequestParam String address,
                            @RequestParam String description,
                            @RequestParam String placeCategory,
-                           @RequestParam MultipartFile img) throws IOException {
-
-        long id = placeService.savePlace(
+                           @RequestParam MultipartFile image) throws IOException {
+        placeService.savePlace(
                 Place.builder()
                         .name(name)
                         .country(country)
@@ -43,12 +40,11 @@ public class HomeController {
                         .address(address)
                         .description(description)
                         .placeCategory(PlaceCategory.valueOf(placeCategory.toUpperCase()))
-                        .build()
-        ).getPlaceId();
+                        .build(),
+                image
+        );
 
-        ImageIO.write(ImageIO.read(img.getInputStream()), "jpg", new File(IMAGE_LOCATION + id + ".jpg"));
-
-        return "redirect:/";
+        return Constants.ROOT_REDIRECT;
     }
 
     @GetMapping("/")
