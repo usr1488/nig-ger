@@ -17,6 +17,6 @@ public class Application {
 
     @Bean
     public DataSource connectionPool() {
-        return new ConnectionPool("jdbc:h2:tcp://localhost/~/nigger", "root", "root");
+        return new ConnectionPool("jdbc:h2:mem:", "root", "root");
     }
 }
