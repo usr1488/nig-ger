@@ -1,6 +1,7 @@
 package nig.ger.service;
 
 import nig.ger.entity.Place;
+import nig.ger.exception.PlaceNotFoundException;
 import nig.ger.repository.PlaceRepository;
 import nig.ger.util.Constants;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,7 @@ public class PlaceService {
         ImageIO.write(
                 ImageIO.read(image.getInputStream()),
                 IMAGE_FORMAT,
-                new File(Constants.IMAGE_LOCATION + placeRepository.save(place).getPlaceId() + "." + IMAGE_FORMAT)
+                new File(Constants.PLACE_IMAGE_LOCATION + placeRepository.save(place).getPlaceId() + "." + IMAGE_FORMAT)
         );
     }
 
@@ -33,7 +34,7 @@ public class PlaceService {
         return placeRepository.findAll();
     }
 
-    public Place getPlaceById(Long id) {
-        return placeRepository.findById(id).orElse(new Place());
+    public Place getPlaceById(long placeId) {
+        return placeRepository.findById(placeId).orElseThrow(() -> new PlaceNotFoundException(placeId));
     }
 }

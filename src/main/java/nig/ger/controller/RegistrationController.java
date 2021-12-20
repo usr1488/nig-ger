@@ -11,11 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.ImageIO;
-import java.io.File;
 import java.io.IOException;
 
-import static nig.ger.util.Constants.*;
+import static nig.ger.util.Constants.PROFILE_REDIRECT;
 
 
 @Controller
@@ -39,22 +37,20 @@ public class RegistrationController {
                                    @RequestParam String country,
                                    @RequestParam String city,
                                    @RequestParam MultipartFile profilePhoto) throws IOException {
-
-        long id = userService.saveUser(
-                User.builder()
-                        .username(username)
-                        .password(password)
-                        .email(email)
-                        .sex(Sex.valueOf(sex.toUpperCase()))
-                        .role(Role.USER)
-                        .country(country)
-                        .city(city)
-                        .isOnline(true)
-                        .status(" ")
-                        .build()).getUserId();
-
-        ImageIO.write(ImageIO.read(profilePhoto.getInputStream()), IMAGE_FORMAT, new File(PROFILE_PHOTO_LOCATION + id + ".jpg"));
-
-        return PROFILE_REDIRECT + id;
+        return PROFILE_REDIRECT +
+                userService.saveUser(
+                        User.builder()
+                                .username(username)
+                                .password(password)
+                                .email(email)
+                                .sex(Sex.valueOf(sex.toUpperCase()))
+                                .role(Role.USER)
+                                .country(country)
+                                .city(city)
+                                .isOnline(true)
+                                .status(" ")
+                                .build(),
+                        profilePhoto
+                ).getUserId();
     }
 }
