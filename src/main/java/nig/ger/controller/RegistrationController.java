@@ -4,7 +4,6 @@ import nig.ger.entity.Role;
 import nig.ger.entity.Sex;
 import nig.ger.entity.User;
 import nig.ger.service.UserService;
-import nig.ger.util.Constants;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,8 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Objects;
 
 import static nig.ger.util.Constants.*;
 
@@ -48,10 +45,7 @@ public class RegistrationController {
                         .username(username)
                         .password(password)
                         .email(email)
-                        .sex(Arrays.stream(Sex.values())
-                                .filter(x -> x.getSex().equalsIgnoreCase(sex))
-                                .findFirst()
-                                .orElseThrow(RuntimeException::new))
+                        .sex(Sex.valueOf(sex.toUpperCase()))
                         .role(Role.USER)
                         .country(country)
                         .city(city)
@@ -61,6 +55,6 @@ public class RegistrationController {
 
         ImageIO.write(ImageIO.read(profilePhoto.getInputStream()), IMAGE_FORMAT, new File(PROFILE_PHOTO_LOCATION + id + ".jpg"));
 
-        return PROFILE_REDIRECT;
+        return PROFILE_REDIRECT + id;
     }
 }

@@ -10,6 +10,10 @@ import org.springframework.web.servlet.ModelAndView;
 public class ProfileController {
     private UserService userService;
 
+    public ProfileController(UserService userService) {
+        this.userService = userService;
+    }
+
     @GetMapping("/profile/{userId}")
     public ModelAndView getProfile(@PathVariable long userId) {
         return new ModelAndView("profile", "userList", userService.getUserById(userId));
