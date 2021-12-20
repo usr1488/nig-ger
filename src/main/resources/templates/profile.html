@@ -87,20 +87,25 @@
             </div>
         </div>
         <div class="col-10">
-            <div class="card" style="border-color: #414952;">
-                <div class="card-header" style="background-color: #2d333b; color: #a6b3c0;">
-                    Registration
-                </div>
-                <table class="mb-3">
+            <div class="card" style="background-color: #22272e; color: #a6b3c0; border-color: #414952;">
+                <table class="mb-3" style="background-color: #22272e; color: #a6b3c0;">
                     <tr th:each="ul : ${userList}" th:field="${ul}">
-                        <div class="card" style="width: 18rem;">
-                            <img th:src="@{'/profile_image/' + ${ul.userId} + '.jpg'}" class="card-img-top">
+                        <div class="card-header" style="background-color: #2d333b; color: #a6b3c0;">
+                            <span th:text="${ul.username} + ' | ' + ${ul.role}"></span>
+                        </div>
 
-                            <div class="card-body">
-                                <h5 class="card-title"><span th:text="${ul.username}"></span></h5>
-                                <p class="card-text">Some quick example text to build on the card title and make up the
-                                    bulk of the card's content.</p>
-                                <a href="#" class="btn btn-primary">Go somewhere</a>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col">
+                                    <img th:src="@{'/profile_image/' + ${ul.userId} + '.jpg'}" class="img-thumbnail m-3"
+                                         style="width: 30rem; background-color: #22272e; color: #a6b3c0; border-color: #414952;"
+                                         alt="/profile_image/default.jpg">
+                                </div>
+                                <div class="col mt-3">
+                                    <p>Status:<span th:text="' ' + ${ul.status}"></span></p>
+                                    <p>Sex:<span th:text="' '  +${ul.sex}"></span></p>
+                                    <p>Location:<span th:text="' ' + ${ul.country} + ', ' + ${ul.city}"></span></p>
+                                </div>
                             </div>
                         </div>
                     </tr>
