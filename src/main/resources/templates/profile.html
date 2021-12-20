@@ -94,7 +94,7 @@
                 <table class="mb-3">
                     <tr th:each="ul : ${userList}" th:field="${ul}">
                         <div class="card" style="width: 18rem;">
-                            <img th:src="@{'/profile_img/' + ${ul.userId} + '.jpg'}" class="card-img-top">
+                            <img th:src="@{'/img/' + ${ul.userId} + '.jpg'}" class="card-img-top">
 
                             <div class="card-body">
                                 <h5 class="card-title"><span th:text="${ul.username}"></span></h5>
