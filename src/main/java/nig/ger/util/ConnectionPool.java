@@ -1,20 +1,21 @@
 package nig.ger.util;
 
 import javax.sql.DataSource;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.logging.Logger;
 
 public class ConnectionPool implements DataSource {
     private final int connectionThreshold;
@@ -26,6 +27,7 @@ public class ConnectionPool implements DataSource {
     private final Queue<Connection> connections = new ConcurrentLinkedQueue<>();
     private final Queue<Connection> weakConnections = new ConcurrentLinkedQueue<>();
     private final Lock lock = new ReentrantLock(true);
+    private final Logger logger = new Logger(System.out);
 
     public ConnectionPool(String url, String username, String password) {
         this(url, username, password, 10);
@@ -35,9 +37,11 @@ public class ConnectionPool implements DataSource {
         this.url = url;
         this.username = username;
         this.password = password;
-        this.connectionThreshold = connectionThreshold;
+        this.connectionThreshold = Math.max(1, connectionThreshold);
 
         Runtime.getRuntime().addShutdownHook(new Thread(scheduledExecutorService::shutdownNow));
+
+        logger.log("ConnectionPool is ready");
     }
 
     @Override
@@ -47,8 +51,6 @@ public class ConnectionPool implements DataSource {
 
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
-        System.out.printf("connections: %d\nweak connections: %d\n\n", connections.size(), weakConnections.size());
-
         return connectionToProxyMap.computeIfAbsent(
                 Optional.ofNullable(connections.poll()).orElse(DriverManager.getConnection(url, username, password)),
                 key -> (Connection) Proxy.newProxyInstance(
@@ -79,10 +81,12 @@ public class ConnectionPool implements DataSource {
             weakConnections.add(connection);
             scheduledExecutorService.schedule(() -> {
                 try {
-                    connectionToProxyMap.remove(weakConnections.remove()).close();
-                } catch (NoSuchElementException ignored) { // used remove() instead of poll() to prevent NPE on close()
+                    if (weakConnections.removeIf(connection::equals)) {
+                        connectionToProxyMap.remove(connection);
+                        connection.close();
+                    }
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    logger.log("Exception occurred while closing connection: " + e.getMessage());
                 }
             }, 30, TimeUnit.SECONDS);
         }
@@ -105,26 +109,40 @@ public class ConnectionPool implements DataSource {
 
     @Override
     public PrintWriter getLogWriter() {
-        return new PrintWriter(System.out);
+        return logger.printWriter;
     }
 
     @Override
-    public void setLogWriter(PrintWriter out) {
-
+    public void setLogWriter(PrintWriter printWriter) {
+        logger.printWriter = printWriter;
     }
 
     @Override
     public void setLoginTimeout(int seconds) {
-
+        DriverManager.setLoginTimeout(seconds);
     }
 
     @Override
     public int getLoginTimeout() {
-        return 0;
+        return DriverManager.getLoginTimeout();
     }
 
     @Override
-    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+    public java.util.logging.Logger getParentLogger() throws SQLFeatureNotSupportedException {
         throw new SQLFeatureNotSupportedException();
+    }
+
+    private static class Logger {
+        private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("y-M-d H:m:s");
+        private PrintWriter printWriter;
+
+        private Logger(OutputStream outputStream) {
+            this.printWriter = new PrintWriter(outputStream);
+        }
+
+        private void log(String message) {
+            printWriter.printf("[%s # %s] %s\n", LocalDateTime.now().format(formatter), Thread.currentThread().getName(), message);
+            printWriter.flush();
+        }
     }
 }

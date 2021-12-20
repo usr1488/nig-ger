@@ -1,7 +1,5 @@
 <!doctype html>
-<html lang="en">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <!-- Required meta tags -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -29,10 +27,22 @@
         background-color: #414952;
         color: white;
     }
+
+    input[type="file"] {
+        background-color: #22272e;
+        color: #6c757d;
+        border-color: #414952;
+    }
+
+    #img {
+        background-color: #22272e;
+        color: #6c757d;
+        border-color: #414952;
+    }
+
 </style>
 
 <title>Nig ger</title>
-</head>
 <body style="background-color: #22272e;">
 <header>
     <nav class="navbar navbar-dark" style="background-color: #2d333b;">
@@ -81,7 +91,7 @@
                     Niggers page
                 </div>
                 <div class="card-body" style="background-color: #22272e;">
-                    <div class="accordion mb-3" style="border-color: #414952;" id="accordionExample">
+                    <form class="accordion mb-3" action="/" method="post" enctype="multipart/form-data" style="border-color: #414952;" id="accordionExample">
                         <div class="accordion-item mb-3" style="border-color: #414952;">
                             <h2 class="accordion-header" id="headingOne">
                                 <button class="accordion-button collapsed"
@@ -97,7 +107,7 @@
                                  style="background-color: #22272e;" aria-labelledby="headingOne"
                                  data-bs-parent="#accordionExample">
                                 <div class="accordion-body">
-                                    <form class="mb-3" th:action="@{/}" method="post">
+                                    <form class="mb-3" action="/" method="post" enctype="multipart/form-data">
                                         <div class="mb-3">
                                             <input type="text" class="form-control"
                                                    style="background-color: #22272e;  color: #6c757d; border-color: #414952;"
@@ -107,7 +117,7 @@
                                         <div class="mb-3">
                                             <select class="form-select"
                                                     style="background-color: #22272e; color: #6c757d; border-color: #414952;"
-                                                    aria-label="category" name="category">
+                                                    aria-label="category" name="placeCategory">
                                                 <option selected>Choose nigger category</option>
                                                 <option value="Sights">Sights</option>
                                                 <option value="Parks">Parks</option>
@@ -135,8 +145,14 @@
                                         <div class="mb-3">
                                             <input type="text" class="form-control"
                                                    style="background-color: #22272e; color: #6c757d; border-color: #414952;"
-                                                   placeholder="Nigger location"
-                                                   name="location">
+                                                   placeholder="Nigger address"
+                                                   name="address">
+                                        </div>
+<!--                                        <div class="mb-3">-->
+<!--                                            <input class="mb-3 btn" type="file" name="img">-->
+<!--                                        </div>-->
+                                        <div class="mb-3">
+                                            <input class="mb-3 btn" type="file" name="image">
                                         </div>
                                         <div class="mb-3">
                     <textarea class="form-control" placeholder="Tell about your penis" id="floatingTextarea2"
@@ -159,14 +175,14 @@
                                     <div class="card-body" style="background-color: #22272e; color: #6c757d;">
                                         <h5 class="card-title"><span th:text="${nl.city}"></span></h5>
                                         <p class="card-text"><span th:text="${nl.placeCategory}"></span></p>
-                                        <a href="/place" class="btn">More details</a>
+                                        <a th:href="@{'/place/' + ${nl.placeId}}" class="btn">More details</a>
                                     </div>
                                 </div>
                             </table>
                         </tr>
                         <div class="col-2">
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>

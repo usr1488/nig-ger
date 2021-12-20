@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+<style>
+    .dropdown-item {
+        background-color: #22272e;
+        color: #6c757d;
+    }
+
+    .dropdown-item:hover {
+        background-color: #2d333b;
+        color: white;
+    }
+
+    .btn {
+        border-color: #414952;
+        color: #6c757d;
+    }
+
+    .btn:hover {
+        background-color: #414952;
+        color: white;
+    }
+
+    input[type="file"] {
+        background-color: #22272e;
+        color: #6c757d;
+        border-color: #414952;
+    }
+
+    #img {
+        background-color: #22272e;
+        color: #6c757d;
+        border-color: #414952;
+    }
+
+</style>
+
+<title>Registration | Nig ger</title>
+<body style="background-color: #22272e;">
+<header>
+    <nav class="navbar navbar-dark" style="background-color: #2d333b;">
+        <div class="container-fluid">
+            <div class="col">
+            </div>
+            <div class="col">
+                <a class="navbar-brand" style="color: #a6b3c0;" href="#">Finger-in-the-ass.com</a>
+            </div>
+            <ul class="navbar-nav me-auto mb-3 mb-lg-0">
+                <form class="d-flex">
+                    <input class="form-control me-2 mt-2 mb-1"
+                           style="background-color: #2d333b; color: #6c757d; border-color: #414952;" type="search"
+                           placeholder="Search" aria-label="Search">
+                    <button class="btn mt-2 mb-1" type="submit">Search</button>
+                </form>
+            </ul>
+            <div class="col">
+            </div>
+            <div class="col">
+            </div>
+            <div class="col">
+            </div>
+        </div>
+    </nav>
+</header>
+
+<div class="container mt-3">
+    <div class="row">
+        <div class="col">
+            <div class="card" style="border-color: #414952">
+                <div class="card-header" style="background-color: #2d333b; color: #a6b3c0;">
+                    Menu
+                </div>
+                <div class="card-body p-0" style="background-color: #2d333b; color: #a6b3c0;">
+                    <a class="dropdown-item" th:href="@{/profile}" aria-current="true">Profile</a>
+                    <a class="dropdown-item" th:href="@{/bookmarks}" aria-current="true">Bookmarks</a>
+                    <a class="dropdown-item" th:href="@{/}" aria-current="true">Nigger list</a>
+                    <a class="dropdown-item" th:href="@{/logout}" aria-current="true">Logout</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-10">
+            <div class="card" style="border-color: #414952;">
+                <div class="card-header" style="background-color: #2d333b; color: #a6b3c0;">
+                    Registration
+                </div>
+                <div class="p-3" style="background-color: #22272e;">
+                    <form class="mb-3" action="/registration" method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <input type="email" class="form-control"
+                                   style="background-color: #22272e;  color: #6c757d; border-color: #414952;"
+                                   placeholder="Nigger email"
+                                   name="email">
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" class="form-control"
+                                   style="background-color: #22272e;  color: #6c757d; border-color: #414952;"
+                                   placeholder="Nigger username"
+                                   name="username">
+                        </div>
+                        <div class="mb-3">
+                            <input type="password" class="form-control"
+                                   style="background-color: #22272e;  color: #6c757d; border-color: #414952;"
+                                   placeholder="Nigger password"
+                                   name="password">
+                        </div>
+                        <div class="mb-3">
+                            <select class="form-select"
+                                    style="background-color: #22272e; color: #6c757d; border-color: #414952;"
+                                    aria-label="sex" name="sex">
+                                <option selected>Sex</option>
+                                <option value="Human">Human</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" class="form-control"
+                                   style="background-color: #22272e; color: #6c757d; border-color: #414952;"
+                                   placeholder="Nigger country"
+                                   name="country">
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" class="form-control"
+                                   style="background-color: #22272e; color: #6c757d; border-color: #414952;"
+                                   placeholder="Nigger city"
+                                   name="city">
+                        </div>
+                        <div class="mb-3">
+                            <input class="btn" type="file" name="profilePhoto">
+                        </div>
+                        <div>
+                            <button type="submit" class="btn">Register</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+                crossorigin="anonymous"></script>
+    </div>
+</div>
+</body>
+</html>
